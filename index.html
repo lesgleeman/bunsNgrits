@@ -30,6 +30,56 @@
   <!-- responsive style -->
   <link href="css/responsive.css" rel="stylesheet" />
 
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .popup-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .popup {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        width: 400px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 40px;
+        height: 20px;
+    }
+    .toggle-switch input { display: none; }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: #ccc;
+        border-radius: 20px;
+        transition: 0.4s;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+        background: white;
+        border-radius: 50%;
+        transition: 0.4s;
+    }
+    input:checked + .slider { background-color: #007bff; }
+    input:checked + .slider:before { transform: translateX(20px); }
+    .buttons { margin-top: 15px; text-align: right; }
+    .buttons button { padding: 8px 12px; cursor: pointer; }
+</style>
+
 </head>
 
 <body>
@@ -1339,6 +1389,67 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap">
   </script>
   <!-- End Google Map -->
+
+  <div class="popup-overlay" id="popup" style="display: none;">
+    <div class="popup">
+        <h2>Manage Consents and Preferences</h2>
+        <p>We process your data to improve our services. You can customize your preferences below.</p>
+        
+        <h3>Consents</h3>
+        <label>
+            Collect all data.
+            <label class="toggle-switch">
+                <input type="checkbox" id="consent1">
+                <span class="slider"></span>
+            </label>
+        </label><br>
+        <label>
+            Collect only marketing data.
+            <label class="toggle-switch">
+                <input type="checkbox" id="consent2">
+                <span class="slider"></span>
+            </label>
+        </label><br>
+        <label>
+            Share my data with third parties.
+            <label class="toggle-switch">
+                <input type="checkbox" id="consent3">
+                <span class="slider"></span>
+            </label>
+        </label>
+        
+        <div class="buttons">
+            <button onclick="acceptAll()">Allow All</button>
+            <button onclick="savePreferences()">Save</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    if (localStorage.getItem("consentGiven")) {
+        document.getElementById("popup").style.display = "none";
+    } else {
+        document.getElementById("popup").style.display = "flex"; // Show only if consent not given
+    }
+});
+
+
+    function acceptAll() {
+        document.getElementById("consent1").checked = true;
+        document.getElementById("consent2").checked = true;
+        document.getElementById("consent3").checked = true;
+        savePreferences();
+    }
+
+    function savePreferences() {
+        localStorage.setItem("consentGiven", true);
+        localStorage.setItem("consent1", document.getElementById("consent1").checked);
+        localStorage.setItem("consent2", document.getElementById("consent2").checked);
+        localStorage.setItem("consent3", document.getElementById("consent3").checked);
+        document.getElementById("popup").style.display = "none";
+    }
+</script>
 
 </body>
 
